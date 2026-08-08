@@ -2,6 +2,7 @@ package com.example.testtech.activity.service;
 
 import com.example.testtech.activity.dto.ActivityResponse;
 import com.example.testtech.activity.dto.CreateActivityRequest;
+import com.example.testtech.activity.dto.UpdateActivityRequest;
 import com.example.testtech.activity.entity.Activity;
 import com.example.testtech.activity.repository.ActivityRepository;
 import com.example.testtech.guide.entity.Guide;
@@ -80,11 +81,51 @@ public class ActivityService {
         return toResponse(activity);
     }
 
+    public ActivityResponse updateActivity(
+            UUID guideId,
+            UUID activityId,
+            UpdateActivityRequest request
+    ) {
+        Guide guide = guideRepository.findById(guideId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("Guide introuvable")
+                );
+
+        Activity activity = getActivityFromGuide(
+                guideId,
+                activityId
+        );
+
+        if (request.dayNumber() > guide.getNumberOfDays()) {
+            throw new IllegalArgumentException(
+                    "Le numéro du jour dépasse la durée du guide"
+            );
+        }
+
+        activity.setTitle(request.title());
+        activity.setDescription(request.description());
+        activity.setCategory(request.category());
+        activity.setAddress(request.address());
+        activity.setPhone(request.phone());
+        activity.setOpeningHours(request.openingHours());
+        activity.setWebsite(request.website());
+        activity.setDayNumber(request.dayNumber());
+        activity.setVisitOrder(request.visitOrder());
+
+        Activity updatedActivity =
+                activityRepository.save(activity);
+
+        return toResponse(updatedActivity);
+    }
+
     public void deleteActivity(
             UUID guideId,
             UUID activityId
     ) {
-        Activity activity = getActivityFromGuide(guideId, activityId);
+        Activity activity = getActivityFromGuide(
+                guideId,
+                activityId
+        );
 
         activityRepository.delete(activity);
     }

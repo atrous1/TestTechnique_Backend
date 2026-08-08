@@ -2,6 +2,7 @@ package com.example.testtech.guide.controller;
 
 import com.example.testtech.guide.dto.CreateGuideRequest;
 import com.example.testtech.guide.dto.GuideResponse;
+import com.example.testtech.guide.dto.UpdateGuideRequest;
 import com.example.testtech.guide.service.GuideService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -44,10 +45,21 @@ public class GuideController {
 
     @GetMapping("/{id}")
     public ResponseEntity<GuideResponse> getGuideById(
-            @PathVariable UUID id
+            @PathVariable UUID id,
+            Authentication authentication
     ) {
         return ResponseEntity.ok(
-                guideService.getGuideById(id)
+                guideService.getGuideById(id, authentication)
+        );
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GuideResponse> updateGuide(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateGuideRequest request
+    ) {
+        return ResponseEntity.ok(
+                guideService.updateGuide(id, request)
         );
     }
 

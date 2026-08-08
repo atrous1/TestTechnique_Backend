@@ -2,6 +2,7 @@ package com.example.testtech.activity.controller;
 
 import com.example.testtech.activity.dto.ActivityResponse;
 import com.example.testtech.activity.dto.CreateActivityRequest;
+import com.example.testtech.activity.dto.UpdateActivityRequest;
 import com.example.testtech.activity.service.ActivityService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -43,12 +44,43 @@ public class ActivityController {
         );
     }
 
+    @GetMapping("/{activityId}")
+    public ResponseEntity<ActivityResponse> getActivityById(
+            @PathVariable UUID guideId,
+            @PathVariable UUID activityId
+    ) {
+        return ResponseEntity.ok(
+                activityService.getActivityById(
+                        guideId,
+                        activityId
+                )
+        );
+    }
+
+    @PutMapping("/{activityId}")
+    public ResponseEntity<ActivityResponse> updateActivity(
+            @PathVariable UUID guideId,
+            @PathVariable UUID activityId,
+            @Valid @RequestBody UpdateActivityRequest request
+    ) {
+        return ResponseEntity.ok(
+                activityService.updateActivity(
+                        guideId,
+                        activityId,
+                        request
+                )
+        );
+    }
+
     @DeleteMapping("/{activityId}")
     public ResponseEntity<Void> deleteActivity(
             @PathVariable UUID guideId,
             @PathVariable UUID activityId
     ) {
-        activityService.deleteActivity(guideId, activityId);
+        activityService.deleteActivity(
+                guideId,
+                activityId
+        );
 
         return ResponseEntity.noContent().build();
     }
