@@ -45,20 +45,41 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
+
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/webjars/**"
+                        ).permitAll()
+
                         .requestMatchers("/api/auth/**").permitAll()
 
-                        .requestMatchers("/api/users/**").hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.POST, "/api/guides/**")
+                        .requestMatchers("/api/users/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.PUT, "/api/guides/**")
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/guides/**"
+                        )
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.DELETE, "/api/guides/**")
+                        .requestMatchers(
+                                HttpMethod.PUT,
+                                "/api/guides/**"
+                        )
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/api/guides/**")
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/guides/**"
+                        )
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/guides/**"
+                        )
                         .authenticated()
 
                         .anyRequest().authenticated()
@@ -66,7 +87,9 @@ public class SecurityConfig {
 
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt ->
-                                jwt.jwtAuthenticationConverter(jwtRoleConverter)
+                                jwt.jwtAuthenticationConverter(
+                                        jwtRoleConverter
+                                )
                         )
                 );
 
