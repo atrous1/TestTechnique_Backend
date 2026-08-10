@@ -1,14 +1,17 @@
 package com.example.testtech.user.controller;
 
 import com.example.testtech.user.dto.CreateUserRequest;
+import com.example.testtech.user.dto.UpdateUserRequest;
 import com.example.testtech.user.dto.UserResponse;
 import com.example.testtech.user.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -29,15 +32,32 @@ public class UserController {
                 .status(HttpStatus.CREATED)
                 .body(response);
     }
+
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        return ResponseEntity.ok(
+                userService.getAllUsers()
+        );
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable UUID id,
+            @Valid @RequestBody UpdateUserRequest request
+    ) {
+        return ResponseEntity.ok(
+                userService.updateUser(id, request)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable UUID id
+    ) {
         userService.deleteUser(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }
